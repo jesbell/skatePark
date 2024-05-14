@@ -69,6 +69,7 @@
         })
           .then(function(response) {
             alert(response.data.message);
+            $('#registro_Form')[0].reset(); // limpiando datos del formulario
           })
           .catch(function(error) {
             console.error('Error:', error);

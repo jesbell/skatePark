@@ -11,6 +11,7 @@ const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = 3001;
+app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(expressFileUpload({
     limits: { fileSize: 5000000 },
@@ -21,7 +22,7 @@ app.use(expressFileUpload({
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'views', 'index.html'));
-    console.log(__dirname);
+    //console.log(__dirname);
 });
 
 app.post('/registro', async (req,res) => {
@@ -45,7 +46,7 @@ app.post('/registro', async (req,res) => {
 
     try {
         await agregarUsuario(email, nombre, password, anos_experiencia, especialidad, ruta);
-        res.json({ message: 'Registro exitoso' });
+        res.json({ message: 'Registro exitoso. Puede Iniciar Sesión' });
     } catch (error) {
         res.status(500).json({ message: 'Error en registro', message: error.message });
         console.log(error);
@@ -57,7 +58,7 @@ app.post('/registro', async (req,res) => {
 app.get('/skaters', async (req, res) => {
     try {
         const resultado = await getSkaters();
-        console.log(resultado.rows);
+        //console.log(resultado.rows);
         res.json(resultado.rows);
     } catch (error) {
         console.error("Error al cargar a los skaters");

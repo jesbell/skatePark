@@ -38,8 +38,6 @@ app.use(expressFileUpload({
 );
 
 app.get('/', async (req, res) => {
-    /* res.sendFile(path.join(__dirname, 'public', 'views', 'index.html')); */
-    //console.log(__dirname);
     try {
         const skaters = await getSkaters();
         res.render('index', { skaters: skaters.rows });
@@ -51,6 +49,10 @@ app.get('/', async (req, res) => {
 
 app.get('/registrarme', (req, res) => {
     res.render('registrarme');
+});
+
+app.get('/iniciar', (req, res) => {
+    res.render('login');
 });
 
 app.post('/registro', async (req,res) => {
@@ -80,17 +82,6 @@ app.post('/registro', async (req,res) => {
         console.log(error);
     }
     
-});
-
-// endpoint para obtener skaters
-app.get('/skaters', async (req, res) => {
-    try {
-        const resultado = await getSkaters();
-        //console.log(resultado.rows);
-        res.json(resultado.rows);
-    } catch (error) {
-        console.error("Error al cargar a los skaters");
-    }
 });
 
 

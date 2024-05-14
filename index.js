@@ -3,6 +3,7 @@ import { dirname } from 'path'; // funciones para manejo de rutas de archivos y 
 import express from "express";
 import path from 'path';
 import expressFileUpload from 'express-fileupload';
+import exphbs from 'express-handlebars';
 import pool from './dbConfig.js';
 import { agregarUsuario, getSkaters } from './consultas.js';
 
@@ -11,6 +12,22 @@ const __dirname = dirname(__filename);
 
 const app = express();
 const PORT = 3001;
+
+app.engine('.handlebars', exphbs.engine(
+    {
+        layoutsDir: __dirname + "/views",
+        defaultLayout: false, 
+        helpers: {
+            add: function(index) { 
+                return index + 1; 
+            }
+        },
+    }
+));
+app.set('view engine', '.handlebars');
+app.set('views', path.join(__dirname, 'views'));
+
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 app.use(expressFileUpload({
@@ -20,9 +37,20 @@ app.use(expressFileUpload({
     })
 );
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'views', 'index.html'));
+app.get('/', async (req, res) => {
+    /* res.sendFile(path.join(__dirname, 'public', 'views', 'index.html')); */
     //console.log(__dirname);
+    try {
+        const skaters = await getSkaters();
+        res.render('index', { skaters: skaters.rows });
+    } catch (error) {
+        console.error("Error al cargar a los skaters");
+        res.status(500).send('Error interno del servidor');
+    }
+});
+
+app.get('/registrarme', (req, res) => {
+    res.render('registrarme');
 });
 
 app.post('/registro', async (req,res) => {

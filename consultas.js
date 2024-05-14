@@ -11,4 +11,16 @@ const agregarUsuario = async(email, nombre, password, anos_experiencia, especial
     }
 }
 
-export { agregarUsuario };
+const getSkaters = async () => {
+    try {
+        const result = await pool.query({
+            text: 'SELECT * from skaters',
+            rowMode: "array"  
+        });
+        return result.rows;
+    } catch (error) {
+        console.log("Erros al consultar Skaters");
+    }
+}
+
+export { agregarUsuario, getSkaters };

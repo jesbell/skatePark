@@ -4,7 +4,7 @@ import express from "express";
 import path from 'path';
 import expressFileUpload from 'express-fileupload';
 import pool from './dbConfig.js';
-import { agregarUsuario } from './consultas.js';
+import { agregarUsuario, getSkaters } from './consultas.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -49,6 +49,17 @@ app.post('/registro', async (req,res) => {
         console.log(error);
     }
     
+});
+
+// endpoint para obtener skaters
+app.get('/skaters', async (req, res) => {
+    try {
+        const resultado = await getSkaters();
+        res.json(resultado);
+        
+    } catch (error) {
+        console.error("Error al cargar a los skaters");
+    }
 });
 
 

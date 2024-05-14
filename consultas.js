@@ -13,11 +13,12 @@ const agregarUsuario = async(email, nombre, password, anos_experiencia, especial
 
 const getSkaters = async () => {
     try {
-        const result = await pool.query({
+        /* const result = await pool.query({
             text: 'SELECT * from skaters',
             rowMode: "array"  
-        });
-        return result.rows;
+        }); */
+        const result = await pool.query('SELECT * from skaters');
+        return result;
     } catch (error) {
         console.log("Erros al consultar Skaters");
     }

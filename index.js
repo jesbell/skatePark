@@ -21,6 +21,7 @@ app.use(expressFileUpload({
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'views', 'index.html'));
+    console.log(__dirname);
 });
 
 app.post('/registro', async (req,res) => {
@@ -32,6 +33,7 @@ app.post('/registro', async (req,res) => {
     }
 
     const nombreArchivo = `${nombre}_${anos_experiencia}.jpg`;
+    const ruta = path.join('assets', 'img', nombreArchivo);
     const rutaImagen = path.join(__dirname, 'public', 'assets', 'img', nombreArchivo);
 
     foto_perfil.mv(rutaImagen, (error) => {
@@ -42,7 +44,7 @@ app.post('/registro', async (req,res) => {
     });
 
     try {
-        await agregarUsuario(email, nombre, password, anos_experiencia, especialidad, rutaImagen);
+        await agregarUsuario(email, nombre, password, anos_experiencia, especialidad, ruta);
         res.json({ message: 'Registro exitoso' });
     } catch (error) {
         res.status(500).json({ message: 'Error en registro', message: error.message });
@@ -55,8 +57,8 @@ app.post('/registro', async (req,res) => {
 app.get('/skaters', async (req, res) => {
     try {
         const resultado = await getSkaters();
-        res.json(resultado);
-        
+        console.log(resultado.rows);
+        res.json(resultado.rows);
     } catch (error) {
         console.error("Error al cargar a los skaters");
     }

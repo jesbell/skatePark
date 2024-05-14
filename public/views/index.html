@@ -32,42 +32,31 @@
             <th scope="col">Estado</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td><div></div></td>
-            <td>Tony Hawk</td>
-            <td>12</td>
-            <td>Kickflip</td>
-            <td class="text-success font-weight-bold">Aprobado</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td><div></div></td>
-            <td>Evelien Bouilliart</td>
-            <td>10</td>
-            <td>Heelflip</td>
-            <td class="text-success font-weight-bold">Aprobado</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td><div></div></td>
-            <td>Danny Way</td>
-            <td>8</td>
-            <td>Ollie</td>
-            <td class="text-warning font-weight-bold">En revisión</td>
-          </tr>
-        </tbody>
+        <tbody id="cuerpo"></tbody>
       </table>
       <a href="#">Iniciar Sesión</a> |
       <a href="views/Registro.html">Registrarme</a>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
+      let tbody = document.getElementById("cuerpo");
         axios.get('/skaters')
             .then(response => {
                 const skaters = response.data;
-                console.log(skaters); 
+                tbody.innerHTML = "";
+                console.log(skaters);
+                skaters.forEach((s, i) => {
+                  tbody.innerHTML += `
+                  <tr>
+                    <th scope="row">${i + 1}</th>
+                    <td><img src="${s.foto}" width="50" height="50"></td>
+                    <td>${s.nombre}</td>
+                    <td>${s.anos_experiencia}</td>
+                    <td>${s.especialidad}</td>
+                    <td class="${s.estado ? 'text-success' : 'text-warning'} font-weight-bold">${s.estado ? 'Aprobado' : 'En revisión'}</td>
+                  </tr>          
+                  `
+                }); 
             })
             .catch(error => {
                 console.error('Error al obtener los datos de los skaters:', error);

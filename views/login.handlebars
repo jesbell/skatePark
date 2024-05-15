@@ -20,20 +20,36 @@
       <h2>Iniciar Sesión</h2>
       <hr class="w-50" />
 
-      <form>
+      <form id="loginForm">
         <div class="form-group">
           <div class="form-group">
             <label>Email</label>
-            <input class="form-control w-50 m-auto" />
+            <input class="form-control w-50 m-auto" type="email" id="email" name="email" required />
           </div>
           <div class="form-group">
             <label>Password</label>
-            <input class="form-control w-50 m-auto" />
+            <input class="form-control w-50 m-auto" type="password" id="password" name="password" required />
           </div>
         </div>
-        <button class="btn btn-success mb-3">Ingresar</button>
+        <button type="submit" class="btn btn-success mb-3">Ingresar</button>
         <p>¿Aún no tienes cuenta? <a href="/registrarme">Regístrate</a></p>
       </form>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData(this);
+
+            axios.post('/login', formData)
+                .then(function(response) {
+                    alert(response.data.message);
+                })
+                .catch(function(error) {
+                    console.error('Error:', error);
+                    alert('Error al iniciar sesión');
+                });
+        });
+    </script>
   </body>
 </html>

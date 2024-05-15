@@ -17,7 +17,7 @@ app.engine('.handlebars', exphbs.engine(
     {
         layoutsDir: __dirname + "/views",
         defaultLayout: false, 
-        helpers: {
+        helpers: { 
             add: function(index) { 
                 return index + 1; 
             }
@@ -37,6 +37,7 @@ app.use(expressFileUpload({
     })
 );
 
+// carga la página index
 app.get('/', async (req, res) => {
     try {
         const skaters = await getSkaters();
@@ -55,6 +56,7 @@ app.get('/iniciar', (req, res) => {
     res.render('login');
 });
 
+// endpoint para efectuar el registro de un usuario
 app.post('/registro', async (req,res) => {
     const { email, nombre, password, anos_experiencia, especialidad } = req.body;
     const foto_perfil = req.files ? req.files.foto_perfil : null;
@@ -82,6 +84,13 @@ app.post('/registro', async (req,res) => {
         console.log(error);
     }
     
+});
+
+// end point para autenticar usuario:
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    console.log(email);
+    console.log(password);
 });
 
 

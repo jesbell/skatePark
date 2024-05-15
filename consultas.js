@@ -13,10 +13,6 @@ const agregarUsuario = async(email, nombre, password, anos_experiencia, especial
 
 const getSkaters = async () => {
     try {
-        /* const result = await pool.query({
-            text: 'SELECT * from skaters',
-            rowMode: "array"  
-        }); */
         const result = await pool.query('SELECT * from skaters');
         return result;
     } catch (error) {
@@ -24,4 +20,24 @@ const getSkaters = async () => {
     }
 }
 
-export { agregarUsuario, getSkaters };
+const getUsuario = async (email, password) => {
+    try {
+        const query = {
+            text: 'SELECT * FROM skaters WHERE email = $1 AND password = $2',
+            values: [email, password]
+          };
+        const result = await pool.query(query);
+
+        if (result.rows.length > 0) {
+            return result.rows[0];
+        } else {
+            return null;
+        }
+    } catch (error) {
+        console.error('Error al buscar usuario:', error);
+    }
+}
+
+
+
+export { agregarUsuario, getSkaters, getUsuario };

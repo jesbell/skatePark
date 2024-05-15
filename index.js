@@ -5,7 +5,7 @@ import path from 'path';
 import expressFileUpload from 'express-fileupload';
 import exphbs from 'express-handlebars';
 import pool from './dbConfig.js';
-import { agregarUsuario, getSkaters } from './consultas.js';
+import { agregarUsuario, getSkaters, getUsuario } from './consultas.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -89,8 +89,25 @@ app.post('/registro', async (req,res) => {
 // end point para autenticar usuario:
 app.post('/login', async (req, res) => {
     const { email, password } = req.body;
-    console.log(email);
-    console.log(password);
+
+    try {
+        const encontrado = await getUsuario(email, password);
+
+        if (!encontrado) {
+            return res.status(401).send("Usuario no encontrado");
+        }
+
+        console.log(encontrado);
+
+        const token = jwt.sign({ userId: encontrado.id }, "Mi llave secreta", {
+            expiresIn: "1h",
+        });
+        res.json({ message: 'Ha iniciado sesión exitosamente' });
+    
+    } catch (error) {
+        res.status(500).json({ message: 'Se ha producido un error' });
+        console.log(error);
+    }
 });
 
 

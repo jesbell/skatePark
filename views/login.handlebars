@@ -46,8 +46,9 @@
                     alert(response.data.message);
                 })
                 .catch(function(error) {
-                    console.error('Error:', error);
-                    alert('Error al iniciar sesión');
+                    console.error('Error:', error);                    
+                    alert('Error al iniciar sesión: ' + error.response.data);
+                    
                 });
         });
     </script>

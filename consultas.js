@@ -80,9 +80,24 @@ const editarUsuario = async (id, nombre, password, anos_experiencia, especialida
         return result;        
     } catch (error) {
         console.error('Error al actualizar usuario:', error);
+        throw error;
+    }
+}
+
+const actualizarEstado = async (id, estado) => {
+    try {
+        const query = {
+            text: 'UPDATE skaters SET estado = $2 WHERE id = $1',
+            values: [id, estado]
+        }; 
+        const result = await pool.query(query);
+        return result;        
+    } catch (error) {
+        console.error('Error al actualizar usuario:', error);
+        throw error;
     }
 }
 
 
 
-export { agregarUsuario, getSkaters, getUsuario, getUsuarioId, eliminarUsuario, editarUsuario };
+export { agregarUsuario, getSkaters, getUsuario, getUsuarioId, eliminarUsuario, editarUsuario, actualizarEstado };

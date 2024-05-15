@@ -6,7 +6,7 @@ import expressFileUpload from 'express-fileupload';
 import exphbs from 'express-handlebars';
 import jwt from 'jsonwebtoken';
 import pool from './dbConfig.js';
-import { agregarUsuario, getSkaters, getUsuario, getUsuarioId, eliminarUsuario, editarUsuario } from './consultas.js';
+import { agregarUsuario, getSkaters, getUsuario, getUsuarioId, eliminarUsuario, editarUsuario, actualizarEstado } from './consultas.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -174,15 +174,39 @@ app.put('/usuario/:id', verifyToken, async (req, res) => {
     }
 
     const userData = req.body;
-    console.log(userData.nombre)
-    console.log("idtoken:", idToken);
-    console.log("userId:", userId);
+
     try {
         const resultado = await editarUsuario(idToken, userData.nombre, userData.password, userData.anos_experiencia, userData.especialidad);
-        console.log(resultado);
+        //console.log(resultado);
         res.status(200).json({ message: 'Usuario actualizado correctamente' });
     } catch (error) {
         res.status(500).json({ message: 'Error al actualizar el usuario' });
+        console.log(error);
+    }
+});
+
+// carga la página admin
+app.get('/admin', async (req, res) => {
+    try {
+        const skaters = await getSkaters();
+        res.render('admin', { skaters: skaters.rows });
+    } catch (error) {
+        console.error("Error al cargar a los skaters");
+        res.status(500).send('Error interno del servidor');
+    }
+});
+
+// Actualiza estado del skater
+app.put('/skaters/:id', async (req, res) => {
+    const skaterId = req.params.id;
+    const estado = req.body.estado;
+    console.log(skaterId);
+    console.log(estado);
+    try {
+        const resultado = await actualizarEstado(skaterId, estado);
+        console.log(resultado);
+        res.status(200).json({ message: 'Estado del usuario cambiado correctamente' });
+    } catch (error) {
         console.log(error);
     }
 });

@@ -18,7 +18,7 @@ app.engine('.handlebars', exphbs.engine(
     {
         layoutsDir: __dirname + "/views",
         defaultLayout: false, 
-        helpers: { 
+        helpers: { /* Nos ayuda a enumerar las tablas para que comience desde el 1 */
             add: function(index) { 
                 return index + 1; 
             }
@@ -27,7 +27,6 @@ app.engine('.handlebars', exphbs.engine(
 ));
 app.set('view engine', '.handlebars');
 app.set('views', path.join(__dirname, 'views'));
-
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
@@ -49,6 +48,7 @@ app.get('/', async (req, res) => {
     }
 });
 
+// carga las páginas 
 app.get('/registrarme', (req, res) => {
     res.render('registrarme');
 });
@@ -98,10 +98,12 @@ app.post('/login', async (req, res) => {
             return res.status(401).send("Usuario no encontrado");
         }
 
+        // Generando Token
         const token = jwt.sign({ userId: encontrado.id }, "Mi llave secreta", {
             expiresIn: "1h",
         });
-        res.json({ message: 'Ha iniciado sesión exitosamente', token });
+        console.log("token: ", token)
+        res.json({ token });
     
     } catch (error) {
         res.status(500).json({ message: 'Se ha producido un error' });
@@ -109,16 +111,17 @@ app.post('/login', async (req, res) => {
     }
 });
 
-app.get('/datos', (req, res) => {
-    res.render('datos');
-});
-
-// Middleware
+// Middleware para verificar token
 const verifyToken = (req, res, next) => {
-    const token = req.headers.authorization;
+    let token = req.headers.authorization; // Obtener token del header
+
+    // Si el token no está intenta obtenerlo del query
+    if (!token && req.query.token) {
+        token = req.query.token;
+    }
 
     if (!token) {
-        return res.status(401).send("Token no proporcionado");
+        return res.status(401).render('error', { message: "Token no proporcionado" });
     }
 
     jwt.verify(token, "Mi llave secreta", (err, decoded) => {
@@ -130,14 +133,18 @@ const verifyToken = (req, res, next) => {
     });
 };
 
+// carga página datos
+app.get('/datos', verifyToken,  (req, res) => {
+    res.render('datos');
+});
+
 // Obtener los datos del usuario para la página datos.handlebars
 app.get('/usuario', verifyToken, async (req, res) => {
     try {
         const id = req.userId;
 
-        // Consultar y obtener datos del usuario
+        // Consulta y obtiene datos del usuario
         const usuario = await getUsuarioId(id);
-
         res.json(usuario);
     } catch (error) {
         console.error('Error al obtener los datos del usuario:', error);
@@ -149,8 +156,6 @@ app.get('/usuario', verifyToken, async (req, res) => {
 app.delete('/usuario/:id', verifyToken, async (req, res) => {
     const userId = req.params.id;
     const idToken = req.userId;
-    console.log("userId:",userId)
-    console.log("idtoken:", idToken)
 
     if (userId !== idToken.toString()) {
         return res.status(403).json({ message: 'No tienes permiso para eliminar este usuario' });
@@ -164,7 +169,7 @@ app.delete('/usuario/:id', verifyToken, async (req, res) => {
 
 });
 
-// Editar usuario
+// Para editar usuario
 app.put('/usuario/:id', verifyToken, async (req, res) => {
     const userId = req.params.id;
     const idToken = req.userId;
@@ -185,7 +190,7 @@ app.put('/usuario/:id', verifyToken, async (req, res) => {
     }
 });
 
-// carga la página admin
+// carga la página admin y los datos
 app.get('/admin', async (req, res) => {
     try {
         const skaters = await getSkaters();

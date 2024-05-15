@@ -6,8 +6,9 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
     .then(function(response) {
         const token = response.data.token;
         localStorage.setItem('token', token);
-        alert(response.data.message);
-        window.location.href = '/datos';
+        console.log('Token guardado en el almacenamiento local:', token);
+        alert("Se ha conectado exitosamente");
+        window.location.href = `/datos?token=${token}`; 
     })
     .catch(function(error) {
         console.error('Error:', error);                    

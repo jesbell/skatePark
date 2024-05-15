@@ -58,7 +58,7 @@
             </div>
             </div>
             <div class="mb-1">
-            <button class="btn btn-primary">Actualizar</button>
+            <button type="button" class="btn btn-primary" id="editarUsuario">Actualizar</button>
             </div>
             <div>
             <button type="button" class="btn btn-danger" id="eliminarUsuario">Eliminar cuenta</button>
@@ -70,7 +70,7 @@
     <script>
         let usuarioId;
         
-        // Función para obtener a usuario
+        // Función para obtener usuario
         function obtenerDatosUsuario() {
             axios.get('/usuario', {
                 headers: {
@@ -111,9 +111,33 @@
                 alert('Error al eliminar usuario');
             });
         }
+        
+        // funcion editar usuario
+        function editarUsuario(){
+            const datos = new FormData(document.querySelector('form'));
+            const usuarioData = {
+            nombre: datos.get('nombre'),
+            password: datos.get('password'),
+            anos_experiencia: datos.get('anos_experiencia'),
+            especialidad: datos.get('especialidad'),
+        };
+            axios.put('/usuario/' + usuarioId, usuarioData, {
+                headers: {
+                    Authorization: localStorage.getItem('token') // Obtener el token
+                }
+            })
+            .then(function(response) {
+                alert(response.data.message);
+            })
+            .catch(function(error) {
+                console.error('Error al editar usuario:', error);
+                alert('Error al editar usuario');
+            });
+        }
 
         window.onload = function() {            
             document.getElementById('eliminarUsuario').addEventListener('click', eliminarUsuario);
+            document.getElementById('editarUsuario').addEventListener('click', editarUsuario);
             obtenerDatosUsuario();
         };
     </script>

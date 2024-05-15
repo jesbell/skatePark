@@ -6,7 +6,7 @@ import expressFileUpload from 'express-fileupload';
 import exphbs from 'express-handlebars';
 import jwt from 'jsonwebtoken';
 import pool from './dbConfig.js';
-import { agregarUsuario, getSkaters, getUsuario, getUsuarioId, eliminarUsuario } from './consultas.js';
+import { agregarUsuario, getSkaters, getUsuario, getUsuarioId, eliminarUsuario, editarUsuario } from './consultas.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -162,6 +162,29 @@ app.delete('/usuario/:id', verifyToken, async (req, res) => {
         res.status(500).json({ message: 'Error al eliminar usuario' });
     }
 
+});
+
+// Editar usuario
+app.put('/usuario/:id', verifyToken, async (req, res) => {
+    const userId = req.params.id;
+    const idToken = req.userId;
+
+    if (userId !== idToken.toString()) {
+        return res.status(403).json({ message: 'No tienes permiso para editar este usuario' });
+    }
+
+    const userData = req.body;
+    console.log(userData.nombre)
+    console.log("idtoken:", idToken);
+    console.log("userId:", userId);
+    try {
+        const resultado = await editarUsuario(idToken, userData.nombre, userData.password, userData.anos_experiencia, userData.especialidad);
+        console.log(resultado);
+        res.status(200).json({ message: 'Usuario actualizado correctamente' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al actualizar el usuario' });
+        console.log(error);
+    }
 });
 
 app.listen(PORT, () => {

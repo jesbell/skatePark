@@ -70,6 +70,19 @@ const eliminarUsuario = async (id) => {
     } 
 }
 
+const editarUsuario = async (id, nombre, password, anos_experiencia, especialidad) => {
+    try {
+        const query = {
+            text: 'UPDATE skaters SET nombre = $2, password = $3, anos_experiencia = $4, especialidad = $5 WHERE id = $1',
+            values: [id, nombre, password, anos_experiencia, especialidad]
+        }; 
+        const result = await pool.query(query);
+        return result;        
+    } catch (error) {
+        console.error('Error al actualizar usuario:', error);
+    }
+}
 
 
-export { agregarUsuario, getSkaters, getUsuario, getUsuarioId, eliminarUsuario };
+
+export { agregarUsuario, getSkaters, getUsuario, getUsuarioId, eliminarUsuario, editarUsuario };

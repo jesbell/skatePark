@@ -38,6 +38,38 @@ const getUsuario = async (email, password) => {
     }
 }
 
+const getUsuarioId = async (id) => {
+    try {
+        const query = {
+            text: 'SELECT * FROM skaters WHERE id = $1',
+            values: [id]
+        };
+        const result = await pool.query(query);
+        if (result.rows.length > 0) {
+            return result.rows[0];
+        } else {
+            return null;
+        }
+        
+    } catch (error) {
+        console.error('Error al buscar usuario:', error);
+    }  
+}
+
+const eliminarUsuario = async (id) => {
+    try {
+        const query = {
+            text: 'DELETE FROM skaters WHERE id = $1',
+            values: [id]
+        };
+        await pool.query(query);
+        console.log('Usuario eliminado correctamente');
+    } catch (error) {
+        console.error('Error al eliminar usuario:', error);
+        throw error;
+    } 
+}
 
 
-export { agregarUsuario, getSkaters, getUsuario };
+
+export { agregarUsuario, getSkaters, getUsuario, getUsuarioId, eliminarUsuario };

@@ -4,8 +4,9 @@ import express from "express";
 import path from 'path';
 import expressFileUpload from 'express-fileupload';
 import exphbs from 'express-handlebars';
+import jwt from 'jsonwebtoken';
 import pool from './dbConfig.js';
-import { agregarUsuario, getSkaters, getUsuario } from './consultas.js';
+import { agregarUsuario, getSkaters, getUsuario, getUsuarioId, eliminarUsuario } from './consultas.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -97,12 +98,10 @@ app.post('/login', async (req, res) => {
             return res.status(401).send("Usuario no encontrado");
         }
 
-        console.log(encontrado);
-
         const token = jwt.sign({ userId: encontrado.id }, "Mi llave secreta", {
             expiresIn: "1h",
         });
-        res.json({ message: 'Ha iniciado sesión exitosamente' });
+        res.json({ message: 'Ha iniciado sesión exitosamente', token });
     
     } catch (error) {
         res.status(500).json({ message: 'Se ha producido un error' });
@@ -110,6 +109,60 @@ app.post('/login', async (req, res) => {
     }
 });
 
+app.get('/datos', (req, res) => {
+    res.render('datos');
+});
+
+// Middleware
+const verifyToken = (req, res, next) => {
+    const token = req.headers.authorization;
+
+    if (!token) {
+        return res.status(401).send("Token no proporcionado");
+    }
+
+    jwt.verify(token, "Mi llave secreta", (err, decoded) => {
+        if (err) {
+        return res.status(401).send("Token inválido");
+        }
+        req.userId = decoded.userId;
+        next();
+    });
+};
+
+// Obtener los datos del usuario para la página datos.handlebars
+app.get('/usuario', verifyToken, async (req, res) => {
+    try {
+        const id = req.userId;
+
+        // Consultar y obtener datos del usuario
+        const usuario = await getUsuarioId(id);
+
+        res.json(usuario);
+    } catch (error) {
+        console.error('Error al obtener los datos del usuario:', error);
+        res.status(500).json({ message: 'Error del servidor' });
+    }
+});
+
+// Eliminar usuario por id:
+app.delete('/usuario/:id', verifyToken, async (req, res) => {
+    const userId = req.params.id;
+    const idToken = req.userId;
+    console.log("userId:",userId)
+    console.log("idtoken:", idToken)
+
+    if (userId !== idToken.toString()) {
+        return res.status(403).json({ message: 'No tienes permiso para eliminar este usuario' });
+    }
+    try {
+        await eliminarUsuario(userId);
+        res.status(200).json({ message: 'Usuario eliminado correctamente' });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al eliminar usuario' });
+    }
+
+});
 
 app.listen(PORT, () => {
     console.log(`Servidor escuchando en http://localhost:${PORT}`);

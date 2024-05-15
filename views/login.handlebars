@@ -15,7 +15,6 @@
   </head>
   <body>
     <h1>Skate Park</h1>
-
     <div class="py-5">
       <h2>Iniciar Sesión</h2>
       <hr class="w-50" />
@@ -36,24 +35,6 @@
       </form>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script>
-        document.getElementById('loginForm').addEventListener('submit', function(event) {
-            event.preventDefault();
-            const formData = new FormData(this);
-
-            axios.post('/login', formData)
-                .then(function(response) {
-                  const token = response.data.token;
-                  localStorage.setItem('token', token);
-                  alert(response.data.message);
-                  window.location.href = '/datos';
-                })
-                .catch(function(error) {
-                    console.error('Error:', error);                    
-                    alert('Error al iniciar sesión: ' + error.response.data);
-                    
-                });
-        });
-    </script>
+    <script src="js/login.js"></script>
   </body>
 </html>

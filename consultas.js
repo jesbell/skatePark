@@ -58,12 +58,22 @@ const getUsuarioId = async (id) => {
 
 const eliminarUsuario = async (id) => {
     try {
+        // Primero buscamos para salvar la ruta
+        const busqueda = {
+            text: 'SELECT foto FROM skaters WHERE id = $1',
+            values: [id]
+        };
+        const resultFoto = await pool.query(busqueda);
+        const rutaImagen = resultFoto.rows[0].foto;
+
+        // eliminamos usuario
         const query = {
             text: 'DELETE FROM skaters WHERE id = $1',
             values: [id]
         };
         await pool.query(query);
         console.log('Usuario eliminado correctamente');
+        return rutaImagen;
     } catch (error) {
         console.error('Error al eliminar usuario:', error);
         throw error;

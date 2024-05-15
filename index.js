@@ -161,7 +161,7 @@ app.delete('/usuario/:id', verifyToken, async (req, res) => {
         return res.status(403).json({ message: 'No tienes permiso para eliminar este usuario' });
     }
     try {
-        await eliminarUsuario(userId);
+        const rutaImagen = await eliminarUsuario(userId);
         res.status(200).json({ message: 'Usuario eliminado correctamente' });
     } catch (error) {
         res.status(500).json({ message: 'Error al eliminar usuario' });

@@ -72,7 +72,7 @@ const eliminarUsuario = async (id) => {
             values: [id]
         };
         await pool.query(query);
-        console.log('Usuario eliminado correctamente');
+        //console.log('Usuario eliminado correctamente');
         return rutaImagen;
     } catch (error) {
         console.error('Error al eliminar usuario:', error);

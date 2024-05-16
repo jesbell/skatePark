@@ -212,7 +212,7 @@ app.put('/skaters/:id', async (req, res) => {
 
     try {
         const resultado = await actualizarEstado(skaterId, estado);
-        console.log(resultado);
+        //console.log(resultado);
         res.status(200).json({ message: 'Estado del usuario cambiado correctamente' });
     } catch (error) {
         console.log(error);

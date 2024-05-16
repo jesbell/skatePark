@@ -16,7 +16,7 @@ function obtenerDatosUsuario() {
         document.getElementById('anos_experiencia').value = usuario.anos_experiencia;
         document.getElementById('especialidad').value = usuario.especialidad;
         usuarioId = usuario.id;
-        console.log("primero: ",usuarioId);
+        
     })
     .catch(function(error) {
         console.error('Error al obtener los datos del usuario:', error);
@@ -25,7 +25,7 @@ function obtenerDatosUsuario() {
 }
 // funcion para eliminar usuario
 function eliminarUsuario() {
-    console.log("segundo: ",usuarioId)
+    
     axios.delete('/usuario/' + usuarioId, {
         headers: {
             Authorization: localStorage.getItem('token') // Obtener el token

@@ -6,6 +6,7 @@ import expressFileUpload from 'express-fileupload';
 import exphbs from 'express-handlebars';
 import jwt from 'jsonwebtoken';
 import pool from './dbConfig.js';
+import fs from 'fs';
 import { agregarUsuario, getSkaters, getUsuario, getUsuarioId, eliminarUsuario, editarUsuario, actualizarEstado } from './consultas.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -102,7 +103,7 @@ app.post('/login', async (req, res) => {
         const token = jwt.sign({ userId: encontrado.id }, "Mi llave secreta", {
             expiresIn: "1h",
         });
-        console.log("token: ", token)
+        
         res.json({ token });
     
     } catch (error) {
@@ -162,9 +163,12 @@ app.delete('/usuario/:id', verifyToken, async (req, res) => {
     }
     try {
         const rutaImagen = await eliminarUsuario(userId);
+        
+        fs.unlinkSync(path.join(__dirname, 'public', rutaImagen));
         res.status(200).json({ message: 'Usuario eliminado correctamente' });
     } catch (error) {
         res.status(500).json({ message: 'Error al eliminar usuario' });
+        console.log(error);
     }
 
 });
@@ -205,8 +209,7 @@ app.get('/admin', async (req, res) => {
 app.put('/skaters/:id', async (req, res) => {
     const skaterId = req.params.id;
     const estado = req.body.estado;
-    console.log(skaterId);
-    console.log(estado);
+
     try {
         const resultado = await actualizarEstado(skaterId, estado);
         console.log(resultado);

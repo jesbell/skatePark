@@ -1,5 +1,5 @@
 import { fileURLToPath } from 'url'; // función para convertir URL de archivo a ruta de sistema de archivos
-import { dirname } from 'path'; // funciones para manejo de rutas de archivos y directorios
+import { dirname } from 'path'; // para manejo de rutas de archivos y directorios
 import express from "express";
 import path from 'path';
 import expressFileUpload from 'express-fileupload';
@@ -19,8 +19,8 @@ app.engine('.handlebars', exphbs.engine(
     {
         layoutsDir: __dirname + "/views",
         defaultLayout: false, 
-        helpers: { /* Nos ayuda a enumerar las tablas para que comience desde el 1 */
-            add: function(index) { 
+        helpers: { 
+            add: function(index) { /* add: Enumera las tablas para que comiencen desde el 1*/
                 return index + 1; 
             }
         },
@@ -134,6 +134,7 @@ const verifyToken = (req, res, next) => {
     });
 };
 
+
 // carga página datos
 app.get('/datos', verifyToken,  (req, res) => {
     res.render('datos');
@@ -218,6 +219,7 @@ app.put('/skaters/:id', async (req, res) => {
         console.log(error);
     }
 });
+
 
 app.listen(PORT, () => {
     console.log(`Servidor escuchando en http://localhost:${PORT}`);

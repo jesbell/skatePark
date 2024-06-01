@@ -2,8 +2,8 @@ import pg from 'pg';
 const { Pool } = pg;
 
 // Agrega tus datos de conexión
-const name = "";
-const pass = "";
+const name = "jesabeldev";
+const pass = "z";
 
 const pool = new Pool({
     user: name,

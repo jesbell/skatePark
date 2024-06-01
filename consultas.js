@@ -1,25 +1,28 @@
 import pool from "./dbConfig.js";
 
+// Función que agrega usuario a la base de datos
 const agregarUsuario = async(email, nombre, password, anos_experiencia, especialidad, foto) => {
     try {
-       const query ='INSERT INTO skaters (email, nombre, password, anos_experiencia, especialidad, foto, estado) VALUES ($1, $2, $3, $4, $5, $6, $7)';
-       const values = [email, nombre, password, anos_experiencia, especialidad, foto, false];
-       const result = await pool.query(query, values);
-       return result.rows;
+        const query ='INSERT INTO skaters (email, nombre, password, anos_experiencia, especialidad, foto, estado) VALUES ($1, $2, $3, $4, $5, $6, $7)';
+        const values = [email, nombre, password, anos_experiencia, especialidad, foto, false];
+        const result = await pool.query(query, values);
+        return result.rows;
     } catch (error) {
         console.error("Error al agregar usuario a la base de datos", error);
     }
 }
 
+// Carga datos de los skaters
 const getSkaters = async () => {
     try {
         const result = await pool.query('SELECT * from skaters');
         return result;
     } catch (error) {
-        console.log("Erros al consultar Skaters");
+        console.log("Error al consultar Skaters");
     }
 }
 
+// Función que consulta por el usuario 
 const getUsuario = async (email, password) => {
     try {
         const query = {
@@ -38,6 +41,7 @@ const getUsuario = async (email, password) => {
     }
 }
 
+// Busca usuario por id
 const getUsuarioId = async (id) => {
     try {
         const query = {
@@ -56,6 +60,7 @@ const getUsuarioId = async (id) => {
     }  
 }
 
+// Funcion para eliminar usuario por id
 const eliminarUsuario = async (id) => {
     try {
         // Primero buscamos para salvar la ruta
@@ -64,6 +69,7 @@ const eliminarUsuario = async (id) => {
             values: [id]
         };
         const resultFoto = await pool.query(busqueda);
+        // Guardamos ruta imagen
         const rutaImagen = resultFoto.rows[0].foto;
 
         // eliminamos usuario
@@ -72,7 +78,6 @@ const eliminarUsuario = async (id) => {
             values: [id]
         };
         await pool.query(query);
-        //console.log('Usuario eliminado correctamente');
         return rutaImagen;
     } catch (error) {
         console.error('Error al eliminar usuario:', error);
@@ -80,6 +85,7 @@ const eliminarUsuario = async (id) => {
     } 
 }
 
+// Editar usuario
 const editarUsuario = async (id, nombre, password, anos_experiencia, especialidad) => {
     try {
         const query = {
@@ -94,6 +100,7 @@ const editarUsuario = async (id, nombre, password, anos_experiencia, especialida
     }
 }
 
+// Función que actualiza el estado (true or false) del usuario
 const actualizarEstado = async (id, estado) => {
     try {
         const query = {

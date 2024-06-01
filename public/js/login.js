@@ -7,7 +7,6 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         const token = response.data.token;
         localStorage.setItem('token', token);
         alert("Se ha conectado exitosamente");
-        /* window.location.href = `/datos?token=${token}`;  */
         window.location.href = '/datos';
     })
     .catch(function(error) {

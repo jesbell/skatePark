@@ -1,10 +1,11 @@
 document.addEventListener('DOMContentLoaded', function() {
     const token = localStorage.getItem('token');
-    console.log(token);
+    //console.log(token);
     if (!token) {
         window.location.href = '/login';
         return;
     }
+    // Se buscan los datos del usuario, enviando token
     axios.get('/usuario', {
         headers: {
         Authorization: token
@@ -12,8 +13,9 @@ document.addEventListener('DOMContentLoaded', function() {
     })
     .then(function(response) {
         const user = response.data;
-        const userDataDiv = document.getElementById('userData');
-        userDataDiv.innerHTML = `
+        const userDataForm = document.getElementById('userData');
+        // Se construye el formulario con los datos del usuario
+        userDataForm.innerHTML = `
             <div class="form-group row w-50 m-auto">
                 <div class="form-group col-12 col-sm-6">
                     <label>Email</label>
@@ -59,6 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
             `;
         
+        // Botón editar usuario    
         document.getElementById('editarUsuario').addEventListener('click', function() {
             const datos = new FormData(document.querySelector('form'));
             const usuarioData = {
@@ -83,6 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
 
+        // Botón eliminar usuario
         document.getElementById('eliminarUsuario').addEventListener('click', function() {
             axios.delete('/usuario/' + user.id, {
                 headers: {

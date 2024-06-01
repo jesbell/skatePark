@@ -6,7 +6,7 @@ import expressFileUpload from 'express-fileupload';
 import exphbs from 'express-handlebars';
 import jwt from 'jsonwebtoken';
 import pool from './dbConfig.js';
-import fs from 'fs';
+import fs from 'fs'; // Se utiliza la libreria fs con el proposito de eliminar la imagen cuando se elimine el usuario
 import { agregarUsuario, getSkaters, getUsuario, getUsuarioId, eliminarUsuario, editarUsuario, actualizarEstado } from './consultas.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -49,11 +49,12 @@ app.get('/', async (req, res) => {
     }
 });
 
-// carga las páginas 
+// carga la página del registro
 app.get('/registrarme', (req, res) => {
     res.render('registrarme');
 });
 
+// para login
 app.get('/iniciar', (req, res) => {
     res.render('login');
 });
@@ -61,12 +62,14 @@ app.get('/iniciar', (req, res) => {
 // endpoint para efectuar el registro de un usuario
 app.post('/registro', async (req,res) => {
     const { email, nombre, password, anos_experiencia, especialidad } = req.body;
-    const foto_perfil = req.files ? req.files.foto_perfil : null;
+    const foto_perfil = req.files ? req.files.foto_perfil : null; // verifica foto
 
     if (!foto_perfil) {
+        // error si no se propociono la imagen
         return res.status(400).json({ error: 'No se proporcionó ninguna imagen' });
     }
 
+    // Guardamos imagen y su ruta
     const nombreArchivo = `${nombre}_${anos_experiencia}.jpg`;
     const ruta = path.join('assets', 'img', nombreArchivo);
     const rutaImagen = path.join(__dirname, 'public', 'assets', 'img', nombreArchivo);
@@ -93,6 +96,7 @@ app.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     try {
+        // Buscando usuario
         const encontrado = await getUsuario(email, password);
 
         if (!encontrado) {
@@ -148,7 +152,7 @@ app.get('/usuario', verifyToken, async (req, res) => {
     }
 });
 
-// Eliminar usuario por id:
+// Eliminar usuario por id
 app.delete('/usuario/:id', verifyToken, async (req, res) => {
     const userId = req.params.id;
     const idToken = req.userId;
@@ -157,8 +161,9 @@ app.delete('/usuario/:id', verifyToken, async (req, res) => {
         return res.status(403).json({ message: 'No tienes permiso para eliminar este usuario' });
     }
     try {
+        // Eliminamos usuario y retorna su ruta
         const rutaImagen = await eliminarUsuario(userId);
-        
+        // Borramos la imagen en nuestro directorio
         fs.unlinkSync(path.join(__dirname, 'public', rutaImagen));
         res.status(200).json({ message: 'Usuario eliminado correctamente' });
     } catch (error) {
@@ -168,7 +173,7 @@ app.delete('/usuario/:id', verifyToken, async (req, res) => {
 
 });
 
-// Para editar usuario
+// Actualizar datos del usuario
 app.put('/usuario/:id', verifyToken, async (req, res) => {
     const userId = req.params.id;
     const idToken = req.userId;
@@ -181,7 +186,6 @@ app.put('/usuario/:id', verifyToken, async (req, res) => {
 
     try {
         const resultado = await editarUsuario(idToken, userData.nombre, userData.password, userData.anos_experiencia, userData.especialidad);
-        //console.log(resultado);
         res.status(200).json({ message: 'Usuario actualizado correctamente' });
     } catch (error) {
         res.status(500).json({ message: 'Error al actualizar el usuario' });
@@ -189,7 +193,7 @@ app.put('/usuario/:id', verifyToken, async (req, res) => {
     }
 });
 
-// carga la página admin y los datos
+// Carga la página admin y los datos de los skaters
 app.get('/admin', async (req, res) => {
     try {
         const skaters = await getSkaters();
@@ -200,20 +204,20 @@ app.get('/admin', async (req, res) => {
     }
 });
 
-// Actualiza estado del skater
+// Actualiza estado boolean del skater
 app.put('/skaters/:id', async (req, res) => {
     const skaterId = req.params.id;
     const estado = req.body.estado;
 
     try {
         const resultado = await actualizarEstado(skaterId, estado);
-        //console.log(resultado);
         res.status(200).json({ message: 'Estado del usuario cambiado correctamente' });
     } catch (error) {
         console.log(error);
     }
 });
 
+// Carga página datos
 app.get('/datos', (req, res) => {
     res.render('datos');
 });

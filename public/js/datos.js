@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = '/login';
         return;
     }
-    // Se buscan los datos del usuario, enviando token
+    // Se buscan los datos del usuario
     axios.get('/usuario', {
         headers: {
         Authorization: token

@@ -1,72 +1,106 @@
-let usuarioId;
-        
-// Función para obtener usuario
-function obtenerDatosUsuario() {
+document.addEventListener('DOMContentLoaded', function() {
+    const token = localStorage.getItem('token');
+    console.log(token);
+    if (!token) {
+        window.location.href = '/login';
+        return;
+    }
     axios.get('/usuario', {
         headers: {
-            Authorization: localStorage.getItem('token') // Obtener el token
+        Authorization: token
         }
     })
     .then(function(response) {
-        const usuario = response.data;
-        document.getElementById('email').value = usuario.email;
-        document.getElementById('nombre').value = usuario.nombre;
-        document.getElementById('password').value = usuario.password;
-        document.getElementById('password2').value = usuario.password;
-        document.getElementById('anos_experiencia').value = usuario.anos_experiencia;
-        document.getElementById('especialidad').value = usuario.especialidad;
-        usuarioId = usuario.id;
+        const user = response.data;
+        const userDataDiv = document.getElementById('userData');
+        userDataDiv.innerHTML = `
+            <div class="form-group row w-50 m-auto">
+                <div class="form-group col-12 col-sm-6">
+                    <label>Email</label>
+                    <input
+                    class="form-control m-auto" name="email" type="email" id="email" value="${user.email}"
+                    disabled
+                    />
+                </div>
+                <div class="form-group col-12 col-sm-6">
+                    <label>Nombre</label>
+                    <input class="form-control m-auto" name="nombre" type="text" id="nombre" value="${user.nombre}" required />
+                </div>
+                <div class="form-group col-12 col-sm-6">
+                    <label>Password</label>
+                    <input
+                    type="password" name="password" id="password" value="${user.password}" required
+                    class="form-control m-auto"
+                    />
+                </div>
+                <div class="form-group col-12 col-sm-6">
+                    <label>Repita la password</label>
+                    <input
+                    type="password"
+                    class="form-control m-auto"
+                    id="password2"
+                    value="${user.password}"
+                    />
+                </div>
+                <div class="form-group col-12 col-sm-6">
+                    <label>Años de experiencia</label>
+                    <input class="form-control m-auto" name="anos_experiencia" type="number" id="anos_experiencia" value="${user.anos_experiencia}" required/>
+                </div>
+                <div class="form-group col-12 col-sm-6">
+                    <label>Especialidad</label>
+                    <input class="form-control m-auto" name="especialidad" type="text" id="especialidad" value="${user.especialidad}" required/>
+                </div>
+            </div>
+            <div class="mb-1">
+                <button type="button" class="btn btn-primary" id="editarUsuario">Actualizar</button>
+            </div>
+            <div>
+                <button type="button" class="btn btn-danger" id="eliminarUsuario">Eliminar cuenta</button>
+            </div>
+            `;
         
+        document.getElementById('editarUsuario').addEventListener('click', function() {
+            const datos = new FormData(document.querySelector('form'));
+            const usuarioData = {
+                email: datos.get('email'),
+                nombre: datos.get('nombre'),
+                password: datos.get('password'),
+                anos_experiencia: datos.get('anos_experiencia'),
+                especialidad: datos.get('especialidad'),
+            };
+
+            axios.put('/usuario/' + user.id, usuarioData, {
+                headers: {
+                    Authorization: `${token}`
+                }
+            })
+            .then(function(response) {
+                alert(response.data.message);
+            })
+            .catch(function(error) {
+                console.error('Error al editar usuario:', error);
+                alert('Error al editar usuario');
+            });
+        });
+
+        document.getElementById('eliminarUsuario').addEventListener('click', function() {
+            axios.delete('/usuario/' + user.id, {
+                headers: {
+                    Authorization: `${token}`
+                }
+            })
+            .then(function(response) {
+                alert('Usuario eliminado correctamente');
+                window.location.href = '/';
+            })
+            .catch(function(error) {
+                console.error('Error al eliminar usuario:', error);
+                alert('Error al eliminar usuario');
+            });
+        });
     })
     .catch(function(error) {
         console.error('Error al obtener los datos del usuario:', error);
         alert('Error al obtener los datos del usuario');
     });
-}
-// funcion para eliminar usuario
-function eliminarUsuario() {
-    
-    axios.delete('/usuario/' + usuarioId, {
-        headers: {
-            Authorization: localStorage.getItem('token') // Obtener el token
-        },
-        timeout: 5000
-    })
-    .then(function(response) {
-        alert('Usuario eliminado correctamente');
-        window.location.href = '/';
-    })
-    .catch(function(error) {
-        console.error('Error al eliminar usuario:', error);
-        alert('Error al eliminar usuario');
-    });
-}
-
-// funcion editar usuario
-function editarUsuario(){
-    const datos = new FormData(document.querySelector('form'));
-    const usuarioData = {
-    nombre: datos.get('nombre'),
-    password: datos.get('password'),
-    anos_experiencia: datos.get('anos_experiencia'),
-    especialidad: datos.get('especialidad'),
-};
-    axios.put('/usuario/' + usuarioId, usuarioData, {
-        headers: {
-            Authorization: localStorage.getItem('token') // Obtener el token
-        }
-    })
-    .then(function(response) {
-        alert(response.data.message);
-    })
-    .catch(function(error) {
-        console.error('Error al editar usuario:', error);
-        alert('Error al editar usuario');
-    });
-}
-
-window.onload = function() {            
-    document.getElementById('eliminarUsuario').addEventListener('click', eliminarUsuario);
-    document.getElementById('editarUsuario').addEventListener('click', editarUsuario);
-    obtenerDatosUsuario();
-};
+});

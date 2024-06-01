@@ -134,12 +134,6 @@ const verifyToken = (req, res, next) => {
     });
 };
 
-
-// carga página datos
-app.get('/datos', verifyToken,  (req, res) => {
-    res.render('datos');
-});
-
 // Obtener los datos del usuario para la página datos.handlebars
 app.get('/usuario', verifyToken, async (req, res) => {
     try {
@@ -220,6 +214,9 @@ app.put('/skaters/:id', async (req, res) => {
     }
 });
 
+app.get('/datos', (req, res) => {
+    res.render('datos');
+});
 
 app.listen(PORT, () => {
     console.log(`Servidor escuchando en http://localhost:${PORT}`);

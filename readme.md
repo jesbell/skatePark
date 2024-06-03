@@ -16,7 +16,7 @@ La Municipalidad de Santiago, ha organizado una competencia de Skate para impuls
 
 A continuación se explica el funcionamiento del proyecto, desde el registro, hasta la edición y eliminación del usuario.
 
-La vista principal del proyecto, encontramos una lista de las personas ya registradas y dos enlaces: para Iniciar Sesión, si ya el usuario esta registrado, y el enlace de Registro, para que el usuario pueda registrarse. La vista de registro, que nos muestra un formulario, todos los datos son obligatorios. 
+En la vista principal del proyecto, encontramos lista de las personas ya registradas (si existe un registro) y dos enlaces: para Iniciar Sesión, si ya el usuario esta registrado, y el enlace de Registro, para que el usuario pueda registrarse. La vista de registro, nos muestra un formulario a rellenar con los datos del participante, todos los datos son obligatorios. 
 
 | Vista Principal | Registro |
 | --- | --- |
@@ -30,13 +30,13 @@ Al registrarse existosamente, se nos indicara un mensaje de alerta de Registro e
 | ![registro_exitoso](/public/imgReadme/registroexitoso.png)| ![login](/public/imgReadme/paginalogin.png) |
 
 
-Al conectarnos (login) exitosamente, nuevamente se nos enviara un mensaje de exito y automáticamente nos llevara a la página de datos del usuario. En esa página el usuario puede modificar y/o eliminar su propia cuenta del registro.
+Al conectarnos (login) exitosamente, nuevamente se nos enviara un mensaje de exito y automáticamente nos llevara a la página de datos del usuario. En esa página, el participante puede modificar y/o eliminar su propia cuenta del registro.
 
 | Conexión Exitosa | Página del usuario |
 | --- | --- |
 | ![conexion_exitoso](/public/imgReadme/loginexitoso.png)| ![data_usuario](/public/imgReadme/datosUsuario.png) |
 
-Al modificar el usuario y seleccionar actualizar, se nos enviará una alerta que se ha modificado correctamente los datos, y al eliminar el usuario, con su botón respectivo, también nos emitirá una alerta que el usuario fue eliminado correctamente. Esto ocurrira si el proceso no tiene errores.
+Al modificar el usuario y seleccionar actualizar, se nos enviará una alerta para avisar ue se ha modificado correctamente los datos. Y al eliminar el usuario, con su botón respectivo, también nos emitirá una alerta que el usuario fue eliminado correctamente. Esto ocurrira si el proceso no tiene errores.
 
 Cuando se actualiza usuario, permanece en la página actual, pero al eliminar a usuario, nos redirige a la página de inicio. 
 
@@ -44,13 +44,13 @@ Cuando se actualiza usuario, permanece en la página actual, pero al eliminar a 
 | --- | --- | --- |
 | ![actualizacion_exitosa](/public/imgReadme/updexitoso.png)| ![eliminacion](/public/imgReadme/deletexitoso.png) | ![inicio](/public/imgReadme/paginainicio.png) |
 
-Finalmente, existe una página más localhost:XXXX/admin, a la cual puedes acceder. En esta página puedes cambiar el estado de los usuarios gracias a los checklist.
+Finalmente, existe una página más localhost:3001/admin, a la cual puedes acceder. En esta página puedes cambiar el estado de los usuarios gracias a los checklist.
 
 | Página Admin | Check List activado | Estado cambiado |
 | --- | --- | --- |
 | ![admin_1](/public/imgReadme/vistaAdmin.png)| ![admin_2](/public/imgReadme/checkcambiado.png) | ![estado_cambiado](/public/imgReadme/estadocambiado.png) |
 
-Cuando se selecciona un ckecklist, aparece una alerta, para avisar al usuario que el cambio fue realizado. Este cambio se ve reflejado en la página principal, cuando el estado del usuario para de En revisión a Aprobado. 
+Cuando se selecciona un ckecklist, aparece una alerta, para avisar al usuario que el cambio fue realizado. Este cambio se ve reflejado en la página principal, cuando el estado del participante pasa de "En revisión" a "Aprobado". 
 
 
 ## Empezando 🚀
@@ -90,17 +90,18 @@ npm install
     const pass = "";
    ```
 
-6. Después debes levantar el servidor (index.js) con el siguiente comando en tu consola
-```
-npm start
-```
+6. Después debes levantar el servidor (index.js) con el siguiente comando en tu consola.
+   
+   ```
+   npm start
+   ```
 
-Este te dará el enlace para que puedas ingresar directamente al localhost
-```
-http://localhost:3001
-```
+   Este te dará el enlace para que puedas ingresar directamente al localhost
+   ```
+   http://localhost:3001
+   ```
 
-7. En un principio la base de datos esta vacía, así que antes de probar el proyecto, se debe asegurar de registrar algunos usuarios. 
+En un principio la base de datos esta vacía, así que antes de probar el proyecto, se debe asegurar de registrar algunos usuarios. 
 
 
 ## Soporte

@@ -71,7 +71,7 @@ Lista de software y herramientas, incluyendo versiones, que necesitas para insta
 1. Para utilizar este proyecto debes clonar este repositorio en tu máquina, utilizando git.
 
 ```
-git clone 
+git clone git@github.com:jesbell/skatePark.git
 ```
 
 2. Una vez allí puedes abrir el proyecto donde te sea más comodo. 
@@ -106,7 +106,7 @@ En un principio la base de datos esta vacía, así que antes de probar el proyec
 
 ## Soporte
 
-Si tienes algún problema o sugerencia, por favor abre un problema [aquí]().
+Si tienes algún problema o sugerencia, por favor abre un problema [aquí](https://github.com/jesbell/skatePark/issues).
 
 ## Versionado  📌
 
